@@ -20,41 +20,34 @@ namespace SurityTrial.Controllers
     {
 
         [HttpGet]
-        public HttpResponseMessage Search(ImageSearchRequest imageSearchRequest)
+        public HttpResponseMessage Search(string RequestNumber, string UserName)
         {
-            if (ModelState.IsValid) 
+            List<Image> imageResult = new List<Image>();
+            var imageSearchResponse = new List<ImageSearchResponse>();
+
+            using (var surityDBContext = new SurityDBContext())
             {
-                List<Image> imageResult = new List<Image>();
-                var imageSearchResponse = new List<ImageSearchResponse>();
+                imageResult = surityDBContext.ImageUploadSessions.Include("image").Where(i =>
+                        i.RequestNumber == RequestNumber &&
+                        i.UserName == UserName
+                    ).Select(x => x.Image).ToList();
 
-                using (var surityDBContext = new SurityDBContext()) 
+                var digitalCertificate = surityDBContext.DigitalCertificate.FirstOrDefault();
+
+                imageResult.ForEach(x => imageSearchResponse.Add(new ImageSearchResponse
                 {
-                    imageResult = surityDBContext.ImageUploadSessions.Include("image").Where(i =>
-                            i.RequestNumber == imageSearchRequest.RequestNumber &&
-                            i.UserName == imageSearchRequest.UserName
-                        ).Select(x => x.Image).ToList();
+                    ImageName = x.FileName,
+                    ImageData = DigitalCertificateManager.GetImage(Path.Combine(FilePaths.XMLBasePath, x.SignedImageFileName), digitalCertificate.PublicKey)
+                }));
 
-                    var digitalCertificate = surityDBContext.DigitalCertificate.FirstOrDefault();
-
-                    imageResult.ForEach(x => imageSearchResponse.Add(new ImageSearchResponse 
-                    {
-                        ImageName = x.FileName,
-                        ImageData = DigitalCertificateManager.GetImage(Path.Combine(FilePaths.XMLBasePath, x.SignedImageFileName), digitalCertificate.PublicKey)
-                    }));
-
-                    //File.WriteAllBytes(HttpContext.Current.Server.MapPath("~/") + "\\" + "Test_Generated.png", imageSearchResponse.FirstOrDefault().ImageData);
-                }
-
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(imageSearchResponse))
-                };
+                //File.WriteAllBytes(HttpContext.Current.Server.MapPath("~/") + "\\" + "Test_Generated.png", imageSearchResponse.FirstOrDefault().ImageData);
             }
-            else
+
+            return new HttpResponseMessage
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
-            }
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(imageSearchResponse))
+            };
         }
 
         [HttpPost]

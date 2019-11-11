@@ -104,7 +104,6 @@
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\ImageUploadSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Requests\ImageSearchRequest.cs" />
     <Compile Include="Requests\ImageUploadRequest.cs" />
     <Compile Include="Responses\ImageSearchResponse.cs" />
   </ItemGroup>
