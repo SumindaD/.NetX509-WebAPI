@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurityTrial", "SurityTrial\SurityTrial.csproj", "{C93957E0-3B17-4CF6-B37E-6336811C8D76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurityCryptography", "SurityCryptography\SurityCryptography.csproj", "{9A08A04C-33D2-48CA-B5A2-DE807DB43B06}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C93957E0-3B17-4CF6-B37E-6336811C8D76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C93957E0-3B17-4CF6-B37E-6336811C8D76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C93957E0-3B17-4CF6-B37E-6336811C8D76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C93957E0-3B17-4CF6-B37E-6336811C8D76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A08A04C-33D2-48CA-B5A2-DE807DB43B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A08A04C-33D2-48CA-B5A2-DE807DB43B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A08A04C-33D2-48CA-B5A2-DE807DB43B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A08A04C-33D2-48CA-B5A2-DE807DB43B06}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2EB300A5-F92C-4954-BC65-7D14C36F7246}
+	EndGlobalSection
+EndGlobal
