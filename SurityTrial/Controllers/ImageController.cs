@@ -18,7 +18,12 @@ namespace SurityTrial.Controllers
 {
     public class ImageController : ApiController
     {
-
+        /// <summary>
+        /// Searches images using the provided Request Number and Username
+        /// </summary>
+        /// <param name="RequestNumber">RequestNumber entered during image upload</param>
+        /// <param name="UserName">UserName entered during image upload</param>
+        /// <returns></returns>
         [HttpGet]
         public HttpResponseMessage Search(string RequestNumber, string UserName)
         {
