@@ -1,4 +1,6 @@
 ﻿using SurityTrial.Configuration;
+using SurityTrial.DAL;
+using SurityTrial.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -8,6 +10,8 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Web.SessionState;
+using Unity;
+using Unity.WebApi;
 
 namespace SurityTrial
 {
@@ -17,6 +21,14 @@ namespace SurityTrial
         {
             GlobalConfiguration.Configure(Config.Register);
             AreaRegistration.RegisterAllAreas();
+
+            // Unity configuration
+            var container = new UnityContainer();
+            container.RegisterType<IImageUploadSessionRepository, ImageUploadSessionRepository>();
+            container.RegisterType<IDigitalCertificateRepository, DigitalCertificateRepository>();
+            GlobalConfiguration.Configuration.DependencyResolver = new UnityResolver(container);
+
+            GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
 
             bool directoryExists = System.IO.Directory.Exists(FilePaths.XMLBasePath);
 

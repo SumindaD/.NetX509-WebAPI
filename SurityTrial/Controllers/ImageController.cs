@@ -1,6 +1,8 @@
 ﻿using SurityCryptography;
 using SurityTrial.Configuration;
 using SurityTrial.Context;
+using SurityTrial.DAL;
+using SurityTrial.DAL.Interfaces;
 using SurityTrial.Models;
 using SurityTrial.Requests;
 using SurityTrial.Responses;
@@ -18,6 +20,17 @@ namespace SurityTrial.Controllers
 {
     public class ImageController : ApiController
     {
+        private IImageUploadSessionRepository _imageUploadSessionRepository;
+        private IDigitalCertificateRepository _digitalCertificateRepository;
+
+
+        public ImageController(IImageUploadSessionRepository imageUploadSessionRepository, IDigitalCertificateRepository digitalCertificateRepository) 
+        {
+            _imageUploadSessionRepository = imageUploadSessionRepository;
+            _digitalCertificateRepository = digitalCertificateRepository;
+        }
+
+
         /// <summary>
         /// Searches images using the provided Request Number and Username
         /// </summary>
@@ -27,40 +40,47 @@ namespace SurityTrial.Controllers
         [HttpGet]
         public HttpResponseMessage Search(string RequestNumber, string UserName)
         {
-            List<Image> imageResult = new List<Image>();
-            var imageSearchResponse = new List<ImageSearchResponse>();
-
-            using (var surityDBContext = new SurityDBContext())
+            try
             {
-                imageResult = surityDBContext.ImageUploadSessions.Include("image").Where(i =>
-                        i.RequestNumber == RequestNumber &&
-                        i.UserName == UserName
-                    ).Select(x => x.Image).ToList();
+                var imageResult = new List<Image>();
+                var imageSearchResponse = new List<ImageSearchResponse>();
 
-                var digitalCertificate = surityDBContext.DigitalCertificate.FirstOrDefault();
-
-                imageResult.ForEach(x => imageSearchResponse.Add(new ImageSearchResponse
+                using (var surityDBContext = new SurityDBContext())
                 {
-                    ImageName = x.FileName,
-                    ImageData = DigitalCertificateManager.GetImage(Path.Combine(FilePaths.XMLBasePath, x.SignedImageFileName), digitalCertificate.PublicKey)
-                }));
+                    imageResult = _imageUploadSessionRepository.SearchImages(RequestNumber, UserName);
 
-                //File.WriteAllBytes(HttpContext.Current.Server.MapPath("~/") + "\\" + "Test_Generated.png", imageSearchResponse.FirstOrDefault().ImageData);
+                    var digitalCertificate = surityDBContext.DigitalCertificate.FirstOrDefault();
+
+                    imageResult.ForEach(x => imageSearchResponse.Add(new ImageSearchResponse
+                    {
+                        ImageName = x.FileName,
+                        ImageData = DigitalCertificateManager.GetImage(Path.Combine(FilePaths.XMLBasePath, x.SignedImageFileName), digitalCertificate.PublicKey)
+                    }));
+
+                    //File.WriteAllBytes(HttpContext.Current.Server.MapPath("~/") + "\\" + "Test_Generated.png", imageSearchResponse.FirstOrDefault().ImageData);
+                }
+
+                return new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(imageSearchResponse))
+                };
             }
-
-            return new HttpResponseMessage
+            catch
             {
-                StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(imageSearchResponse))
-            };
+                // If an uncaught exception occurs, return an error response
+                // with status code 500 (Internal Server Error)
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, LanguageConstants.InternalServerError);
+            }
+                
         }
 
         [HttpPost]
         public HttpResponseMessage Upload(ImageUploadRequest imageUploadRequest)
         {
-            if (ModelState.IsValid)
+            try 
             {
-                using (var surityDBContext = new SurityDBContext())
+                if (ModelState.IsValid)
                 {
                     var xmlDocumentName = Guid.NewGuid().ToString() + ".xml";
 
@@ -75,7 +95,7 @@ namespace SurityTrial.Controllers
                         }
                     };
 
-                    var digitalCertificate = surityDBContext.DigitalCertificate.FirstOrDefault();
+                    var digitalCertificate = _digitalCertificateRepository.Query().FirstOrDefault();
 
                     DigitalCertificateManager.SignImage(
                         imageUploadRequest.ImageData,
@@ -84,9 +104,7 @@ namespace SurityTrial.Controllers
                         Path.Combine(FilePaths.XMLBasePath, xmlDocumentName)
                     );
 
-
-                    surityDBContext.ImageUploadSessions.Add(imageUploadSession);
-                    surityDBContext.SaveChanges();
+                    _imageUploadSessionRepository.Add(imageUploadSession);
 
                     return new HttpResponseMessage
                     {
@@ -94,10 +112,16 @@ namespace SurityTrial.Controllers
                         Content = new StringContent(LanguageConstants.ImageSuccessfullyUploaded)
                     };
                 }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                }
             }
-            else
+            catch
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                // If an uncaught exception occurs, return an error response
+                // with status code 500 (Internal Server Error)
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, LanguageConstants.InternalServerError);
             }
         }
     }
