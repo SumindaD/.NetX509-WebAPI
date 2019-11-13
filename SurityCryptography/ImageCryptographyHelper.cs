@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 namespace SurityCryptography
 {
-    public static class DigitalCertificateManager
+    public static class ImageCryptographyHelper
     {
         public static void SignImage(byte[] imageBuffer, byte[] certificateBuffer, string xmlFilePath) 
         {

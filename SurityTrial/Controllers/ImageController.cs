@@ -54,7 +54,7 @@ namespace SurityTrial.Controllers
                     imageResult.ForEach(x => imageSearchResponse.Add(new ImageSearchResponse
                     {
                         ImageName = x.FileName,
-                        ImageData = DigitalCertificateManager.GetImage(Path.Combine(FilePaths.XMLBasePath, x.SignedImageFileName), digitalCertificate.PublicKey)
+                        ImageData = ImageCryptographyManager.GetImage(Path.Combine(FilePaths.XMLBasePath, x.SignedImageFileName), digitalCertificate.PublicKey)
                     }));
 
                     //File.WriteAllBytes(HttpContext.Current.Server.MapPath("~/") + "\\" + "Test_Generated.png", imageSearchResponse.FirstOrDefault().ImageData);
@@ -97,7 +97,7 @@ namespace SurityTrial.Controllers
 
                     var digitalCertificate = _digitalCertificateRepository.Query().FirstOrDefault();
 
-                    DigitalCertificateManager.SignImage(
+                    ImageCryptographyManager.SignImage(
                         imageUploadRequest.ImageData,
                         //File.ReadAllBytes(HttpContext.Current.Server.MapPath("~/") + "\\" + "Test.png"),
                         digitalCertificate.PrivateKey,
