@@ -17,25 +17,25 @@ namespace SurityCryptography
         {
             var certificate = new X509Certificate2(certificateBuffer);
 
-            var xmlDocumentBuffer = convertImageToXML(imageBuffer);
+            var xmlDocumentBuffer = ConvertImageToXML(imageBuffer);
 
-            signXMLDocument(xmlDocumentBuffer, certificate, xmlFilePath);
+            SignXMLDocument(xmlDocumentBuffer, certificate, xmlFilePath);
         }
 
         public static bool VerifyImage(string xmlFilePath, byte[] certificateBuffer)
         {
             var certificate = new X509Certificate2(certificateBuffer);
 
-            return verifyXMLDocument(xmlFilePath, certificate);
+            return VerifyXMLDocument(xmlFilePath, certificate);
         }
 
         public static byte[] GetImage(string xmlFilePath, byte[] certificateBuffer) 
         {
             var certificate = new X509Certificate2(certificateBuffer);
 
-            var unsignedXMLDocument = unsignXMLDocument(xmlFilePath, certificate);
+            var unsignedXMLDocument = UnsignXMLDocument(xmlFilePath, certificate);
 
-            return convertXMLToImage(unsignedXMLDocument);
+            return ConvertXMLToImage(unsignedXMLDocument);
         }
 
 
@@ -43,7 +43,7 @@ namespace SurityCryptography
 
         // ============================== Helper Methods ==============================
 
-        private static byte[] convertImageToXML(byte[] imageBuffer)
+        private static byte[] ConvertImageToXML(byte[] imageBuffer)
         {
             XmlSerializer x = new XmlSerializer(typeof(byte[]));
 
@@ -55,7 +55,7 @@ namespace SurityCryptography
             }
         }
 
-        private static byte[] convertXMLToImage(XmlDocument xmlDocument)
+        private static byte[] ConvertXMLToImage(XmlDocument xmlDocument)
         {
             StringWriter stringWriter = new StringWriter();
             XmlTextWriter xmlTextWriter = new XmlTextWriter(stringWriter);
@@ -75,7 +75,7 @@ namespace SurityCryptography
             }
         }
 
-        private static void signXMLDocument(byte[] xmlDocumentBuffer, X509Certificate2 certificate, string signedXMLPath)
+        private static void SignXMLDocument(byte[] xmlDocumentBuffer, X509Certificate2 certificate, string signedXMLPath)
         {
             XmlDocument xmlDocument = new XmlDocument();
             string xml = Encoding.UTF8.GetString(xmlDocumentBuffer);
@@ -104,9 +104,9 @@ namespace SurityCryptography
             }
         }
 
-        private static XmlDocument unsignXMLDocument(string xmlFilePath, X509Certificate2 certificate) 
+        private static XmlDocument UnsignXMLDocument(string xmlFilePath, X509Certificate2 certificate) 
         {
-            var xmlDocument = readXMLDocumentFromPath(xmlFilePath);
+            var xmlDocument = ReadXMLDocumentFromPath(xmlFilePath);
 
             var nodeList = xmlDocument.GetElementsByTagName("Signature");
 
@@ -115,9 +115,9 @@ namespace SurityCryptography
             return xmlDocument;
         }
 
-        private static bool verifyXMLDocument(string xmlFilePath, X509Certificate2 certificate)
+        private static bool VerifyXMLDocument(string xmlFilePath, X509Certificate2 certificate)
         {
-            var xmlDocument = readXMLDocumentFromPath(xmlFilePath);
+            var xmlDocument = ReadXMLDocumentFromPath(xmlFilePath);
 
             var signedXml = new SignedXml(xmlDocument);
 
@@ -131,7 +131,7 @@ namespace SurityCryptography
             }
         }
 
-        private static XmlDocument readXMLDocumentFromPath(string xmlFilePath)
+        private static XmlDocument ReadXMLDocumentFromPath(string xmlFilePath)
         {
             // Read XML Document
             var xmlDocument = new XmlDocument();
