@@ -30,6 +30,7 @@ namespace ImageUploader
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.buttonUpload = new System.Windows.Forms.Button();
             this.textBoxUserName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -37,18 +38,21 @@ namespace ImageUploader
             this.label1 = new System.Windows.Forms.Label();
             this.buttonAddFile = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.labelValidationMessage = new System.Windows.Forms.Label();
             this.labelFileName = new System.Windows.Forms.Label();
+            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.buttonCancel = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonUpload
             // 
-            this.buttonUpload.Location = new System.Drawing.Point(27, 222);
+            this.buttonUpload.Location = new System.Drawing.Point(27, 186);
             this.buttonUpload.Name = "buttonUpload";
-            this.buttonUpload.Size = new System.Drawing.Size(362, 23);
+            this.buttonUpload.Size = new System.Drawing.Size(159, 23);
             this.buttonUpload.TabIndex = 13;
             this.buttonUpload.Text = "Upload";
             this.buttonUpload.UseVisualStyleBackColor = true;
+            this.buttonUpload.Click += new System.EventHandler(this.buttonUpload_Click);
             // 
             // textBoxUserName
             // 
@@ -74,7 +78,7 @@ namespace ImageUploader
             this.textBoxRequestNumber.Name = "textBoxRequestNumber";
             this.textBoxRequestNumber.Size = new System.Drawing.Size(235, 20);
             this.textBoxRequestNumber.TabIndex = 10;
-            this.textBoxRequestNumber.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxRequestNumber_KeyPress);
+            this.textBoxRequestNumber.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBoxRequestNumber_KeyPress);
             // 
             // label1
             // 
@@ -89,24 +93,11 @@ namespace ImageUploader
             // 
             this.buttonAddFile.Location = new System.Drawing.Point(27, 145);
             this.buttonAddFile.Name = "buttonAddFile";
-            this.buttonAddFile.Size = new System.Drawing.Size(75, 23);
+            this.buttonAddFile.Size = new System.Drawing.Size(84, 23);
             this.buttonAddFile.TabIndex = 8;
             this.buttonAddFile.Text = "Add File";
             this.buttonAddFile.UseVisualStyleBackColor = true;
-            this.buttonAddFile.Click += new System.EventHandler(this.buttonAddFile_Click);
-            // 
-            // openFileDialog
-            // 
-            this.openFileDialog.FileName = "openFileDialog";
-            // 
-            // labelValidationMessage
-            // 
-            this.labelValidationMessage.AutoSize = true;
-            this.labelValidationMessage.Location = new System.Drawing.Point(151, 188);
-            this.labelValidationMessage.Name = "labelValidationMessage";
-            this.labelValidationMessage.Size = new System.Drawing.Size(35, 13);
-            this.labelValidationMessage.TabIndex = 15;
-            this.labelValidationMessage.Text = "label3";
+            this.buttonAddFile.Click += new System.EventHandler(this.ButtonAddFile_Click);
             // 
             // labelFileName
             // 
@@ -117,22 +108,38 @@ namespace ImageUploader
             this.labelFileName.TabIndex = 16;
             this.labelFileName.Text = "label3";
             // 
+            // errorProvider
+            // 
+            this.errorProvider.ContainerControl = this;
+            // 
+            // buttonCancel
+            // 
+            this.buttonCancel.Location = new System.Drawing.Point(219, 186);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(170, 23);
+            this.buttonCancel.TabIndex = 17;
+            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            // 
             // FormImageUpload
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(421, 257);
+            this.ClientSize = new System.Drawing.Size(421, 229);
+            this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.labelFileName);
-            this.Controls.Add(this.labelValidationMessage);
             this.Controls.Add(this.buttonUpload);
             this.Controls.Add(this.textBoxUserName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBoxRequestNumber);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonAddFile);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "FormImageUpload";
             this.Text = "Image Uploader";
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -147,7 +154,8 @@ namespace ImageUploader
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonAddFile;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.Label labelValidationMessage;
         private System.Windows.Forms.Label labelFileName;
+        private ErrorProvider errorProvider;
+        private Button buttonCancel;
     }
 }
