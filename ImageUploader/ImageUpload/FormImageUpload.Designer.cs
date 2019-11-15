@@ -41,6 +41,7 @@ namespace ImageUploader
             this.labelFileName = new System.Windows.Forms.Label();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.labelUploadSuccess = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
@@ -104,9 +105,9 @@ namespace ImageUploader
             this.labelFileName.AutoSize = true;
             this.labelFileName.Location = new System.Drawing.Point(151, 150);
             this.labelFileName.Name = "labelFileName";
-            this.labelFileName.Size = new System.Drawing.Size(35, 13);
+            this.labelFileName.Size = new System.Drawing.Size(48, 13);
             this.labelFileName.TabIndex = 16;
-            this.labelFileName.Text = "label3";
+            this.labelFileName.Text = "File Path";
             // 
             // errorProvider
             // 
@@ -114,19 +115,29 @@ namespace ImageUploader
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(219, 186);
+            this.buttonCancel.Location = new System.Drawing.Point(233, 186);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(170, 23);
+            this.buttonCancel.Size = new System.Drawing.Size(156, 23);
             this.buttonCancel.TabIndex = 17;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            // 
+            // labelUploadSuccess
+            // 
+            this.labelUploadSuccess.AutoSize = true;
+            this.labelUploadSuccess.Location = new System.Drawing.Point(192, 191);
+            this.labelUploadSuccess.Name = "labelUploadSuccess";
+            this.labelUploadSuccess.Size = new System.Drawing.Size(15, 13);
+            this.labelUploadSuccess.TabIndex = 18;
+            this.labelUploadSuccess.Text = "✓";
             // 
             // FormImageUpload
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(421, 229);
+            this.Controls.Add(this.labelUploadSuccess);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.labelFileName);
             this.Controls.Add(this.buttonUpload);
@@ -157,5 +168,6 @@ namespace ImageUploader
         private System.Windows.Forms.Label labelFileName;
         private ErrorProvider errorProvider;
         private Button buttonCancel;
+        private Label labelUploadSuccess;
     }
 }

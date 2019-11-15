@@ -14,12 +14,14 @@ namespace ImageUploader.Common
     {
         public async static Task<HttpResponseMessage> PostData(string url, object data) 
         {
+            var mediaType = "application/json";
+
             try 
             {
                 using var client = new HttpClient();
 
                 string json = JsonConvert.SerializeObject(data);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var content = new StringContent(json, Encoding.UTF8, mediaType);
                 var response = await client.PostAsync(url, content);
 
                 return response;
@@ -29,8 +31,8 @@ namespace ImageUploader.Common
                 return new HttpResponseMessage 
                 { 
                     StatusCode = HttpStatusCode.ServiceUnavailable, 
-                    Content = new StringContent(exception.Message, Encoding.UTF8, "application/json")
-            };
+                    Content = new StringContent(exception.Message, Encoding.UTF8, mediaType)
+                };
             }
         }
     }

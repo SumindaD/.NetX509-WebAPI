@@ -10,14 +10,14 @@ namespace ImageUploader.Common
 {
     public static class FormImageUploadValidator
     {
-        public static bool ValidFileSize(FileInfo fileInfo) 
+        public static bool InValidFileSize(FileInfo fileInfo) 
         {
             long megabytes = (fileInfo.Length / 1024) / 1024;
 
             if (megabytes > 2)
-                return false;
-            else
                 return true;
+            else
+                return false;
         }
 
         public static bool ValidRequiredTextBoxFields(ErrorProvider errorProvider,params TextBox[] textBoxes) 
@@ -38,16 +38,28 @@ namespace ImageUploader.Common
 
         public static bool ValidateFileInputField(ErrorProvider errorProvider, OpenFileDialog openFileDialog, Button fileDialogOpenButton)
         {
+            bool fileSelected;
+            bool validFileSize;
+
             if (string.IsNullOrEmpty(openFileDialog.FileName))
             {
                 errorProvider.SetError(fileDialogOpenButton, LanguageConstants.ImageIsRequired);
-                return false;
+                fileSelected = false;
             }
-            else 
+            else
+                fileSelected = true;
+
+            
+            if (InValidFileSize(new FileInfo(openFileDialog.FileName)))
             {
-                errorProvider.SetError(fileDialogOpenButton, string.Empty);
-                return true;
+                errorProvider.SetError(fileDialogOpenButton, LanguageConstants.FileSizeIsInvalid);
+                openFileDialog.FileName.Remove(1);
+                validFileSize = false;
             }
+            else
+                validFileSize = true;
+
+            return fileSelected && validFileSize;
         }
 
         public static bool ValidateRequestNumber(ErrorProvider errorProvider, TextBox textBoxRequestNumber) 

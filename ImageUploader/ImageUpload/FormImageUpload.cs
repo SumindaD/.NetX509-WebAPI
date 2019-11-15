@@ -19,7 +19,8 @@ namespace ImageUploader
         public FormImageUpload()
         {
             InitializeComponent();
-            labelFileName.Text = "";
+            labelFileName.Text = string.Empty;
+            labelUploadSuccess.Text = string.Empty;
         }
 
         private void ButtonAddFile_Click(object sender, EventArgs e)
@@ -31,18 +32,8 @@ namespace ImageUploader
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                FileInfo file = new FileInfo(openFileDialog.FileName);
-
-                if (FormImageUploadValidator.ValidFileSize(file))
-                {
-                    labelFileName.Text = openFileDialog.SafeFileName;
-                    errorProvider.SetError(buttonAddFile, "");
-                }
-                else
-                {
-                    errorProvider.SetError(buttonAddFile, LanguageConstants.FileSizeIsInvalid);
-                    openFileDialog.FileName.Remove(1);
-                }
+                labelFileName.Text = openFileDialog.SafeFileName;
+                errorProvider.SetError(buttonAddFile, "");
             }
         }
 
@@ -55,12 +46,13 @@ namespace ImageUploader
 
         private async void buttonUpload_Click(object sender, EventArgs e)
         {
-            if (FormImageUploadValidator.ValidRequiredTextBoxFields(errorProvider, textBoxRequestNumber, textBoxUserName) &&
-                FormImageUploadValidator.ValidateFileInputField(errorProvider, openFileDialog, buttonAddFile) &&
-                FormImageUploadValidator.ValidateRequestNumber(errorProvider, textBoxRequestNumber))
+            if (
+                    FormImageUploadValidator.ValidRequiredTextBoxFields(errorProvider, textBoxRequestNumber, textBoxUserName) &&
+                    FormImageUploadValidator.ValidateFileInputField(errorProvider, openFileDialog, buttonAddFile) &&
+                    FormImageUploadValidator.ValidateRequestNumber(errorProvider, textBoxRequestNumber)
+                )
             {
-                buttonUpload.Enabled = false;
-                buttonCancel.Enabled = false;
+                disableAllButtons();
 
                 var response = await HTTPUtility.PostData(
                     ConfigurationManager.AppSettings["SurityRestAPIBaseURL"] + ConfigurationManager.AppSettings["ImageUploadEndpoint"],
@@ -76,14 +68,15 @@ namespace ImageUploader
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     errorProvider.SetError(buttonUpload, string.Empty);
+                    showUploadSuccessText();
                 }
                 else 
                 {
                     errorProvider.SetError(buttonUpload, await response.Content.ReadAsStringAsync());
+                    labelUploadSuccess.Text = string.Empty;
                 }
 
-                buttonUpload.Enabled = true;
-                buttonCancel.Enabled = true;
+                enableAllButtons();
             }
         }
 
@@ -100,6 +93,28 @@ namespace ImageUploader
             errorProvider.SetError(textBoxUserName, string.Empty);
 
             errorProvider.SetError(buttonUpload, string.Empty);
+
+            labelUploadSuccess.Text = string.Empty;
+        }
+
+        private void showUploadSuccessText() 
+        {
+            labelUploadSuccess.Text = "✓";
+            labelUploadSuccess.ForeColor = Color.Green;
+        }
+
+        private void disableAllButtons() 
+        {
+            buttonUpload.Enabled = false;
+            buttonCancel.Enabled = false;
+            buttonAddFile.Enabled = false;
+        }
+
+        private void enableAllButtons() 
+        {
+            buttonUpload.Enabled = true;
+            buttonCancel.Enabled = true;
+            buttonAddFile.Enabled = true;
         }
     }
 }
