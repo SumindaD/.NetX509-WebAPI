@@ -44,7 +44,7 @@ namespace ImageUploader.Common
             if (string.IsNullOrEmpty(openFileDialog.FileName))
             {
                 errorProvider.SetError(fileDialogOpenButton, LanguageConstants.ImageIsRequired);
-                fileSelected = false;
+                return false;
             }
             else
                 fileSelected = true;
