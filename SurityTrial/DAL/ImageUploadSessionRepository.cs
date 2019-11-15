@@ -22,10 +22,27 @@ namespace SurityTrial.DAL
         {
             using (var surityDBContext = new SurityDBContext()) 
             {
-                return surityDBContext.ImageUploadSessions.Include("image").Where(i =>
-                        i.RequestNumber == requestNumber &&
-                        i.UserName == userName
-                    ).Select(x => x.Image).ToList();
+                if (!string.IsNullOrEmpty(requestNumber) && !string.IsNullOrEmpty(userName))
+                {
+                    return surityDBContext.ImageUploadSessions.Include("image").Where(i =>
+                            i.RequestNumber == requestNumber &&
+                            i.UserName == userName
+                        ).Select(x => x.Image).ToList();
+                }
+                else if (!string.IsNullOrEmpty(requestNumber)) 
+                {
+                    return surityDBContext.ImageUploadSessions.Include("image").Where(i =>
+                            i.RequestNumber == requestNumber
+                        ).Select(x => x.Image).ToList();
+                }
+                else if (!string.IsNullOrEmpty(userName))
+                {
+                    return surityDBContext.ImageUploadSessions.Include("image").Where(i =>
+                            i.UserName == userName
+                        ).Select(x => x.Image).ToList();
+                }
+
+                return new List<Image>();
             }
         }
     }
