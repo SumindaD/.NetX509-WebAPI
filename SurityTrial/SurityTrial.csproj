@@ -166,7 +166,9 @@
     <Compile Include="Context\SurityDBContext.cs" />
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="DAL\DigitalCertificateRepository.cs" />
+    <Compile Include="DAL\ImageRepository.cs" />
     <Compile Include="DAL\Interfaces\IDigitalCertificateRepository.cs" />
+    <Compile Include="DAL\Interfaces\IImageRepository.cs" />
     <Compile Include="DAL\Interfaces\IImageUploadSessionRepository.cs" />
     <Compile Include="DAL\ImageUploadSessionRepository.cs" />
     <Compile Include="Global.asax.cs">

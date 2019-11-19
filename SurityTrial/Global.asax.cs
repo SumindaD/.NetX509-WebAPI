@@ -26,6 +26,7 @@ namespace SurityTrial
             var container = new UnityContainer();
             container.RegisterType<IImageUploadSessionRepository, ImageUploadSessionRepository>();
             container.RegisterType<IDigitalCertificateRepository, DigitalCertificateRepository>();
+            container.RegisterType<IImageRepository, ImageRepository>();
             GlobalConfiguration.Configuration.DependencyResolver = new UnityResolver(container);
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);

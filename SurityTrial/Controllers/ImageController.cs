@@ -22,12 +22,18 @@ namespace SurityTrial.Controllers
     {
         private IImageUploadSessionRepository _imageUploadSessionRepository;
         private IDigitalCertificateRepository _digitalCertificateRepository;
+        private IImageRepository _imageRepository;
 
 
-        public ImageController(IImageUploadSessionRepository imageUploadSessionRepository, IDigitalCertificateRepository digitalCertificateRepository) 
+        public ImageController(
+                IImageUploadSessionRepository imageUploadSessionRepository,
+                IDigitalCertificateRepository digitalCertificateRepository,
+                IImageRepository imageRepository
+            ) 
         {
             _imageUploadSessionRepository = imageUploadSessionRepository;
             _digitalCertificateRepository = digitalCertificateRepository;
+            _imageRepository = imageRepository;
         }
 
 
@@ -45,20 +51,18 @@ namespace SurityTrial.Controllers
                 var imageResult = new List<Image>();
                 var imageSearchResponse = new List<ImageSearchResponse>();
 
-                using (var surityDBContext = new SurityDBContext())
+                imageResult = _imageUploadSessionRepository.SearchImages(RequestNumber, UserName);
+
+                //var digitalCertificate = _digitalCertificateRepository.Query().FirstOrDefault();
+
+                imageResult.ForEach(x => imageSearchResponse.Add(new ImageSearchResponse
                 {
-                    imageResult = _imageUploadSessionRepository.SearchImages(RequestNumber, UserName);
+                    id = x.Id,
+                    ImageName = x.FileName
+                    //ImageData = ImageCryptographyManager.GetImage(Path.Combine(FilePaths.XMLBasePath, x.SignedImageFileName), digitalCertificate.PublicKey)
+                }));
 
-                    var digitalCertificate = surityDBContext.DigitalCertificate.FirstOrDefault();
-
-                    imageResult.ForEach(x => imageSearchResponse.Add(new ImageSearchResponse
-                    {
-                        ImageName = x.FileName,
-                        ImageData = ImageCryptographyManager.GetImage(Path.Combine(FilePaths.XMLBasePath, x.SignedImageFileName), digitalCertificate.PublicKey)
-                    }));
-
-                    //File.WriteAllBytes(HttpContext.Current.Server.MapPath("~/") + "\\" + "Test_Generated.png", imageSearchResponse.FirstOrDefault().ImageData);
-                }
+                //File.WriteAllBytes(HttpContext.Current.Server.MapPath("~/") + "\\" + "Test_Generated.png", imageSearchResponse.FirstOrDefault().ImageData);
 
                 return new HttpResponseMessage
                 {
@@ -122,6 +126,30 @@ namespace SurityTrial.Controllers
                 // If an uncaught exception occurs, return an error response
                 // with status code 500 (Internal Server Error)
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, LanguageConstants.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        public HttpResponseMessage Document(int id) 
+        {
+            try 
+            {
+                var image = _imageRepository.GetImage(id);
+                var digitalCertificate = _digitalCertificateRepository.Query().FirstOrDefault();
+
+                var imageData = ImageCryptographyManager.GetImage(Path.Combine(FilePaths.XMLBasePath, image.SignedImageFileName), digitalCertificate.PublicKey);
+
+                return new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(Convert.ToBase64String(imageData))
+                };
+            }
+            catch(Exception ex)
+            {
+                // If an uncaught exception occurs, return an error response
+                // with status code 500 (Internal Server Error)
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
     }

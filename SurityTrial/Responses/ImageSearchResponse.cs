@@ -7,7 +7,8 @@ namespace SurityTrial.Responses
 {
     public class ImageSearchResponse
     {
+        public int id { get; set; }
         public string ImageName { get; set; }
-        public byte[] ImageData { get; set; }
+        //public byte[] ImageData { get; set; }
     }
 }
